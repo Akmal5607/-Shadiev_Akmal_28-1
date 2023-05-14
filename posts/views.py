@@ -1,5 +1,6 @@
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, render
 from datetime import datetime
+from posts.models import Product
 
 
 def hello(request):
@@ -13,3 +14,19 @@ def now_date(request):
 
 def goodbye(request):
     return HttpResponse("Goodbye user!")
+
+
+def main_view(request):
+    if request.method == 'GET':
+        return render(request, 'layouts/index.html')
+
+
+def products_view(request):
+    if request.method == 'GET':
+        posts = Product.objects.all()
+
+        context = {
+            'posts': posts
+        }
+
+        return render(request, 'products/main.html', context=context)
