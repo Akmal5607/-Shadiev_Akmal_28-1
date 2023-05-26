@@ -1,44 +1,49 @@
 {% extends 'layouts/index.html' %}
+{% load static %}
 
-{% block content %}
-<style type="text/css">
-    .post_block {
-        width: 80%;
-        margin-left: 10%;
-        margin-top: 20px;
-    }
-    .post_block > img {
-        width: 100%;
-    }
-    .dates {
-        display: flex;
-        justify-content: space-between;
-    }
-    .comment_block {
-        padding: 10px;
-        color: blanchedalmond;
-        background: rosybrown;
-        margin-top: 20px;
-    }
-</style>
+{%block content %}
+   <style type="text/css">
+        .post_block {
+            width:80%;
+            margin-left: 10%;
+            margin-top: 20px;
+        }
+        .post_block > img {
+            width: 100% ;
+        }
+        .dates {
+            display: flex;
+            justify-content: space-between;
+        }
+        .comment_block{
+            padding: 10px;
+            color: #ffffff;
+            background: #242b2e;
+            margin-top: 20px;
+        }
+   </style>
+   <div class="post_block">
+       {% if post.image %}
+           <img src="/media/{{ post.image }}" alt=""/>
+       {% else %}
+           <img src="{% static 'img.png' %}" alt=""/>
+       {% endif %}
+       <h1>{{ post.title }}<br> Rate: {{ post.rate }}</h1>
+       <h5>{{ post.despcription }}</h5>
 
-<div class="post_block">
-    <img src="/media/{{ post.image.url }}" alt=""/>
-    <h1>{{ post.title }} <br> Rate: {{ post.rate }} </h1>
-    <h5>{{ post.description }}</h5>
+       <div class="dates">
+           <h5>{{ post.created_date }}</h5>
+           <h5>{{ post.modified_date }}</h5>
+       </div>
 
-    <div class="dates">
-        <h5>{{ post.created_date }}</h5>
-        <h5>{{ post.modified_date }}</h5>
-    </div>
-
-    <div class="reviews">
-        {% for review in reviews %}
-        <div class="review_block">
-            <h5>{{ review.text }}</h5>
+        <div class="comments">
+            {% for comment in comments%}
+                <div class="comment_block">
+                    <h5>{{ comment.text }}</h5>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-</div>
+
+   </div>
 
 {% endblock %}

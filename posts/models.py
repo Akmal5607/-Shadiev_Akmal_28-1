@@ -3,6 +3,7 @@ from django.db import models
 
 class Product(models.Model):
     image = models.ImageField(null=True, blank=True)
+    default_image = models.ImageField(null=True, blank=True, default='default-image.png')
     title = models.CharField(null=True, max_length=255)
     description = models.TextField(null=True)
     created_date = models.DateTimeField(null=True, auto_now_add=True)
@@ -19,4 +20,3 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.post.title} - {self.text}'
-
