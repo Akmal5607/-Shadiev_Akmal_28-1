@@ -1,6 +1,7 @@
-from django.shortcuts import HttpResponse, render
+from django.shortcuts import HttpResponse, render, redirect
 from datetime import datetime
-from posts.models import Product
+from posts.models import Product, Review
+from posts.forms import ProductCreateForm, ReviewCreateForm
 
 
 def hello(request):
@@ -23,22 +24,52 @@ def main_view(request):
 
 def products_view(request):
     if request.method == 'GET':
-        posts = Product.objects.all()
-
+        products = Product.objects.all()
         context = {
-            'posts': posts
+            'products': products
         }
-
         return render(request, 'products/main.html', context=context)
 
 
 def product_detail_view(request, id):
     if request.method == 'GET':
         post = Product.objects.get(id=id)
-
         context = {
-            'post': post,
-            'review': post.review_set.all()
+            'post': post
         }
+        return render(request, 'products/detail.html', context=context)
 
-        return render(request, 'products/detail.html')
+
+def create_product(request):
+    if request.method == 'GET':
+        form = ProductCreateForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'products/create.html', context=context)
+    elif request.method == 'POST':
+        form = ProductCreateForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+        else:
+            context = {
+                'form': form
+            }
+            return render(request, 'products/create.html', context=context)
+
+
+def create_review(request, product_id):
+    if request.method == 'POST':
+        form = ReviewCreateForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.post_id = product_id
+            review.save()
+            return redirect('product_detail', id=product_id)
+    else:
+        form = ReviewCreateForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'products/review_create.html', context=context)
